@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Train important positions from your own games and games played by leading chess masters.">
+  <title>Replay — learn from games that matter</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" id="brandHome">Replay</a>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <button id="navHome" class="nav-item active">Home</button>
+      <button id="navMasters" class="nav-item">Masters</button>
+      <button id="navTraining" class="nav-item hidden">Training</button>
+    </nav>
+    <div class="top-actions">
+      <span class="engine-pill"><span class="engine-dot"></span><span id="engineName">Stockfish loads in your browser</span></span>
+      <button id="settingsButton" class="header-button">Settings</button>
+      <button id="profileButton" class="profile-button"><span id="profileInitial">G</span><span id="profileName">Guest</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="landing" id="hero">
+      <div class="landing-intro">
+        <span class="eyebrow"><span></span> Personal chess study</span>
+        <h1>Learn from your games.<br><span>Learn from masters.</span></h1>
+        <p>Turn recent games into focused puzzles, or study the moves top players found—and missed.</p>
+        <form id="importForm" class="import-form">
+          <select id="gameSource" aria-label="Game source"><option value="chesscom">Chess.com</option><option value="lichess">Lichess</option></select>
+          <label class="username-field"><span id="sourcePrefix">chess.com/</span><input id="username" autocomplete="username" placeholder="username" required minlength="2" maxlength="30"></label>
+          <button class="primary-button" type="submit"><span>Build deck</span></button>
+        </form>
+        <div class="search-meta"><span>Last 7 days, then latest 20 as fallback</span><span id="heroError" class="inline-error" role="alert"></span></div>
+      </div>
+
+      <section class="masters-section" id="mastersSection">
+        <div class="section-heading">
+          <div><span class="eyebrow"><span></span> Featured study decks</span><h2>Learn from masters' games</h2></div>
+        </div>
+        <div class="master-grid">
+          <article class="master-card" data-master="MagnusCarlsen"><span class="master-monogram">MC</span><div><h3>Magnus Carlsen</h3><p>MagnusCarlsen · Chess.com</p></div><div class="study-actions"><button>Study mistakes</button></div></article>
+          <article class="master-card" data-master="Hikaru"><span class="master-monogram">HN</span><div><h3>Hikaru Nakamura</h3><p>Hikaru · Chess.com</p></div><div class="study-actions"><button>Study mistakes</button></div></article>
+          <article class="master-card" data-master="GothamChess"><span class="master-monogram">LR</span><div><h3>Levy Rozman</h3><p>GothamChess · Chess.com</p></div><div class="study-actions"><button>Study mistakes</button></div></article>
+          <article class="master-card" data-master="fabianocaruana"><span class="master-monogram">FC</span><div><h3>Fabiano Caruana</h3><p>fabianocaruana · Chess.com</p></div><div class="study-actions"><button>Study mistakes</button></div></article>
+        </div>
+      </section>
+    </section>
+
+    <section id="trainer" class="trainer hidden">
+      <div class="trainer-toolbar">
+        <div><span class="eyebrow"><span></span><span id="gameWindow">Last 7 days</span></span><h1><span id="deckTitle">Your</span> training deck</h1></div>
+        <div class="toolbar-actions"><span class="deck-stat"><strong id="dueCount">0</strong> due</span><span class="deck-stat"><strong id="puzzleCount">0</strong> positions</span><button id="gamesButton" class="secondary-button">Games <span id="gamesCount">0</span></button></div>
+      </div>
+
+      <div id="analysisBanner" class="analysis-banner hidden"><div class="analysis-copy"><span class="loader"></span><div><strong id="analysisTitle">Starting Stockfish…</strong><span id="analysisDetail">The work happens on this device.</span></div></div><div class="progress-track"><span id="analysisProgress"></span></div></div>
+
+      <div class="training-grid">
+        <aside class="context-panel">
+          <div class="puzzle-context"><div><span id="puzzleCategory" class="category">Your move</span><h2 id="puzzlePrompt">Find the best move in this position</h2></div><div class="game-context"><strong id="puzzleOpponent">—</strong><span id="puzzleMeta">Choose games to begin</span></div></div>
+          <div class="notation-heading"><div><span class="panel-kicker">Game notation</span><h3 id="notationGame">Game score</h3></div><span id="notationResult">—</span></div>
+          <div id="notationList" class="notation-list"><p class="notation-empty">The game notation will follow the current puzzle.</p></div>
+          <div class="notation-footer"><span id="notationOpening">—</span><a id="chessComLink" href="#" target="_blank" rel="noreferrer">Open source game ↗</a></div>
+        </aside>
+
+        <section class="board-area"><div id="boardShell" class="board-shell theme-brown"><div id="board" class="board" aria-label="Interactive chess board"></div><svg id="arrows" class="arrows" viewBox="0 0 800 800" preserveAspectRatio="none" aria-hidden="true"></svg></div><div id="boardMessage" class="board-message"><span class="message-dot"></span><span id="boardMessageText">Select a piece, then choose its destination.</span></div></section>
+
+        <aside class="answer-panel">
+          <div id="welcomePanel" class="answer-state"><span class="panel-kicker">Training loop</span><h2>Important positions, not engine noise.</h2><p>Replay keeps large mistakes, missed mates, and substantial missed wins.</p><button id="startAnalysisButton" class="primary-button">Analyze selected games</button></div>
+          <div id="thinkingPanel" class="answer-state hidden"><span class="thinking-knight">♞</span><span class="panel-kicker">Stockfish 18</span><h2>Finding the moments that matter.</h2><p>Your browser is evaluating the selected games. Nothing is sent to an analysis server.</p></div>
+          <div id="puzzlePanel" class="answer-state hidden"><span class="panel-kicker">From the game</span><h2>What would you play?</h2><p>Click or drag a piece to its destination. The board is shown from the studied player's side.</p><div class="hint-card"><span>Hint</span><strong id="puzzleHint">Look for forcing moves: checks, captures, and threats.</strong></div></div>
+          <div id="wrongPanel" class="answer-state hidden"><span class="result-icon wrong">×</span><span class="panel-kicker">Wrong move</span><h2>There is a stronger continuation.</h2><p id="wrongText">That move misses the point of the position.</p><div class="attempt-eval"><span>Your move</span><strong id="attemptMove">—</strong><small id="attemptEval">Evaluating…</small></div><div class="stack-actions"><button id="tryAgainButton" class="primary-button">Try again</button><button id="showSolutionButton" class="secondary-button">Show solution</button></div></div>
+          <div id="solutionPanel" class="answer-state hidden"><span id="solutionIcon" class="result-icon correct">✓</span><span id="solutionKicker" class="panel-kicker">Correct</span><h2 id="solutionTitle">That is the move.</h2><div class="comparison"><div class="played"><span id="playedLabel">Played in the game</span><strong id="playedMove">—</strong><small id="playedEval">—</small></div><div class="best"><span id="bestLabel">Best move</span><strong id="bestMove">—</strong><small id="bestEval">—</small></div></div><div class="engine-line"><span>Stockfish continuation</span><strong id="solutionLine">—</strong></div><p class="rating-label">When should this return?</p><div class="ratings"><button data-rating="again"><strong>Again</strong><span>&lt; 10m</span></button><button data-rating="hard"><strong>Hard</strong><span>1d</span></button><button data-rating="good"><strong>Good</strong><span>3d</span></button><button data-rating="easy"><strong>Easy</strong><span>7d</span></button></div></div>
+          <div id="emptyPanel" class="answer-state hidden"><span class="result-icon correct">✓</span><span class="panel-kicker">Deck clear</span><h2>No qualifying positions found.</h2><p>Choose more games or import another account.</p></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="authDialog" class="modal auth-modal">
+    <div class="auth-brand">Replay</div><h2>Save your training progress</h2><p>Create a local Replay account, sign in, or continue without one.</p>
+    <div class="auth-tabs"><button data-auth-tab="register" class="active">Create account</button><button data-auth-tab="login">Sign in</button></div>
+    <form id="registerForm" class="auth-form"><label>Account name<input name="username" required minlength="3" maxlength="24" autocomplete="username"></label><label>Password<input name="password" type="password" required minlength="8" autocomplete="new-password"></label><button class="primary-button">Create account</button></form>
+    <form id="loginForm" class="auth-form hidden"><label>Account name<input name="username" required autocomplete="username"></label><label>Password<input name="password" type="password" required autocomplete="current-password"></label><button class="primary-button">Sign in</button></form>
+    <div id="authError" class="inline-error"></div><div class="guest-divider"><span>or</span></div><button id="guestButton" class="secondary-button full-button">Continue as guest</button>
+  </dialog>
+
+  <dialog id="gamesDialog" class="modal"><div class="modal-header"><div><span class="panel-kicker">Deck source</span><h2>Choose games to train</h2></div><button class="close-button" data-close="gamesDialog">×</button></div><div class="selection-row"><button id="selectAllGames" class="text-button">Select all</button><span id="selectedGameCount">0 selected</span></div><div id="gamePicker" class="game-picker"></div><div class="modal-footer"><button class="secondary-button" data-close="gamesDialog">Cancel</button><button id="applyGamesButton" class="primary-button">Train selected games</button></div></dialog>
+
+  <dialog id="settingsDialog" class="modal settings-modal">
+    <div class="modal-header"><div><span class="panel-kicker">Preferences</span><h2>Settings</h2></div><button class="close-button" data-close="settingsDialog">×</button></div>
+    <div class="settings-tabs"><button data-settings-tab="appearance" class="active">Appearance</button><button data-settings-tab="effects">Sound & motion</button><button data-settings-tab="account">Account</button></div>
+    <div class="settings-scroll">
+      <div class="settings-pane" data-settings-pane="appearance">
+        <section class="setting-section"><h3>Website theme</h3><div class="choice-grid site-theme-choices"><button data-site-theme="light"><span class="site-swatch site-light"></span><strong>Light</strong></button><button data-site-theme="dark"><span class="site-swatch site-dark"></span><strong>Dark</strong></button><button data-site-theme="dimmed"><span class="site-swatch site-dimmed"></span><strong>Dimmed</strong></button><button data-site-theme="warm"><span class="site-swatch site-warm"></span><strong>Warm</strong></button></div></section>
+        <section class="setting-section"><h3>Board colors</h3><div class="choice-grid"><button data-theme="brown"><span class="board-swatch brown"></span><strong>Walnut</strong></button><button data-theme="green"><span class="board-swatch green"></span><strong>Lichess green</strong></button><button data-theme="blue"><span class="board-swatch blue"></span><strong>Blue</strong></button><button data-theme="slate"><span class="board-swatch slate"></span><strong>Slate</strong></button></div></section>
+        <section class="setting-section"><h3>Pieces</h3><div class="choice-grid piece-choices"><button data-pieces="cburnett"><img src="/pieces/cburnett/wN.svg" alt=""><strong>Cburnett</strong></button><button data-pieces="alpha"><img src="/pieces/alpha/wN.svg" alt=""><strong>Alpha</strong></button><button data-pieces="merida"><img src="/pieces/merida/wN.svg" alt=""><strong>Merida</strong></button></div></section>
+      </div>
+      <div class="settings-pane hidden" data-settings-pane="effects"><section class="setting-section effects-settings"><div class="toggle-row"><div><h3>Motion and sounds</h3><p>Lightweight move animations and synthesized chess cues.</p></div><label class="switch"><input id="effectsToggle" type="checkbox" checked><span></span></label></div><label class="volume-row" for="masterVolume"><span>Master volume</span><input id="masterVolume" type="range" min="0" max="100" value="65"><output id="volumeOutput">65%</output></label><button id="testSoundButton" class="secondary-button">Play test sound</button></section><p class="license-note">Sounds are synthesized locally with Web Audio. The linked third-party sound-pack repository was not bundled because it does not provide a license.</p></div>
+      <div class="settings-pane hidden" data-settings-pane="account"><section class="setting-section"><h3 id="settingsAccountName">Guest</h3><p id="settingsAccountDetail" class="setting-description">Guest progress is saved only in this browser.</p><button id="logoutButton" class="secondary-button">Leave session</button></section></div>
+    </div>
+    <p class="license-note">Preferences are remembered for this Replay account. Lichess piece artwork is used under its open-source license.</p>
+  </dialog>
+
+  <dialog id="profileDialog" class="modal profile-modal"><div class="modal-header"><div><span class="panel-kicker">Training profile</span><h2 id="profileDialogName">Guest</h2></div><button class="close-button" data-close="profileDialog">×</button></div><div class="profile-stats"><div><strong id="profileReviews">0</strong><span>Reviews</span></div><div><strong id="profileMastered">0</strong><span>Mastered</span></div><div><strong id="profileStreak">0</strong><span>Due today</span></div></div><button id="changeAccountButton" class="secondary-button full-button">Return home</button></dialog>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+  <footer><span>Replay</span><span>Stockfish 18 runs locally · Chess.com and Lichess games · open-source piece artwork</span></footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
